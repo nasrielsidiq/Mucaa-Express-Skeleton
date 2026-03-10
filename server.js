@@ -4,7 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 
-import { connectDB } from "./config/db.js";
+import { ConnectDB } from "./config/db.js";
 import { initDB }    from "./config/db.init.js";
 import userRoutes    from "./routes/user.routes.js";
 import authRoutes    from "./routes/auth.routes.js";
@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
 
 // Connect DB → init tables → start server
 const start = async () => {
-  await connectDB();
+  await ConnectDB();
   await initDB();
   app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 };
