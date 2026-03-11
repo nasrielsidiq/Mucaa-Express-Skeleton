@@ -1,19 +1,14 @@
-// Run once to create tables
-import pool from "./db.js";
+// Run once to create tables and seed data
+import { runInitializers } from "./initializers/index.js";
+import { runSeeders } from "./seeders/index.js";
 
 export const initDB = async () => {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id         INT AUTO_INCREMENT PRIMARY KEY,
-      name       VARCHAR(100)        NOT NULL,
-      email      VARCHAR(150)        NOT NULL UNIQUE,
-      password   VARCHAR(255)        NOT NULL,
-      role       ENUM('user','admin') DEFAULT 'user',
-      is_active  TINYINT(1)          DEFAULT 1,
-      created_at TIMESTAMP           DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP           DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )
-  `);
-
-  console.log("✅ Tables initialized");
+  try {
+    await runInitializers();
+    await runSeeders();
+    console.log("✨ Database initialization and seeding completed");
+  } catch (error) {
+    console.error("❌ Database initialization failed:", error);
+    throw error;
+  }
 };

@@ -6,7 +6,10 @@
   "scripts": {
     "test": "mucaa",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "init:db": "node config/cli/init.js",
+    "seed:db": "node config/cli/seed.js",
+    "reset:db": "node config/cli/reset.js"
   },
   "author": "Mucaa",
   "license": "ISC",
