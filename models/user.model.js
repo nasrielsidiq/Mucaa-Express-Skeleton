@@ -31,12 +31,12 @@ const User = {
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ name, email, password, role = "user" }) {
+  async create({ name, email, password, role = "student", phone_number = null, address = null, birth_date = null }) {
     const hashed = await bcrypt.hash(password, 12);
 
     const [result] = await pool.query(
-      "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-      [name, email, hashed, role]
+      "INSERT INTO users (name, email, password, role, phone_number, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, email, hashed, role, phone_number, address, birth_date]
     );
 
     return this.findById(result.insertId);
@@ -45,7 +45,7 @@ const User = {
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
     // Build dynamic SET clause safely
-    const allowed = ["name", "email"];
+    const allowed = ["name", "email", "phone_number", "address", "birth_date"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);

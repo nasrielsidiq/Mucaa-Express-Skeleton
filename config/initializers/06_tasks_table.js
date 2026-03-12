@@ -1,0 +1,28 @@
+import pool from "../db.js";
+
+export const initTasksTable = async () => {
+    const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS tasks (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      teacher_id INT NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      start_date DATE,
+      due_date DATE,
+      start_time TIME,
+      due_time TIME,
+      status ENUM('pending', 'completed') DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;
+  `;
+
+  try {
+    await pool.query(createTableQuery);
+    console.log("✅ 'tasks' table initialized successfully");
+  } catch (error) {
+    console.error("❌ Failed to initialize 'tasks' table:", error);
+    throw error;
+  }
+};

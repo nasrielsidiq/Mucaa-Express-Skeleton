@@ -1,6 +1,19 @@
 import pool from "../db.js";
 import { ConnectDB } from "../db.js";
 
+const tablesToDrop = [
+  'users', 
+  'directors', 
+  'teachers', 
+  'groups',
+  'students',
+  'tasks',
+  'gived_tasks',
+  'grade_categories',
+  'grades' 
+];
+
+const escapedTables = tablesToDrop.map(table => `\`${table}\``).join(', ');
 (async () => {
   try {
     await ConnectDB();
@@ -8,7 +21,7 @@ import { ConnectDB } from "../db.js";
     // Drop all tables (be careful with this!)
     console.log("🗑️  Dropping existing tables...");
     await pool.query("SET FOREIGN_KEY_CHECKS = 0");
-    await pool.query("DROP TABLE IF EXISTS users");
+    await pool.query(`DROP TABLE IF EXISTS ${escapedTables}`);
     await pool.query("SET FOREIGN_KEY_CHECKS = 1");
 
     console.log("✅ All tables dropped successfully");

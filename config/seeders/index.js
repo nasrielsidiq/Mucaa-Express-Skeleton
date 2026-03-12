@@ -1,6 +1,10 @@
-import { seedUsers } from "./01_users_seeder.js";
+import { seedAdmins } from "./01_admin_seeder.js";
+import { seedGroups } from "./02_groups_seeder.js";
+import { seedDirectors } from "./03_directors_seeder.js";
+import { seedTeachers } from "./04_teachers_seeder.js";
+import { seedStudents } from "./05_students_seeder.js";
 
-const seeders = [seedUsers];
+const seeders = [seedAdmins, seedGroups, seedDirectors, seedTeachers, seedStudents];
 
 export const runSeeders = async () => {
   console.log("🌱 Starting database seeding...");
