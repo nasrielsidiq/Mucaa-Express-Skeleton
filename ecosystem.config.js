@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   apps: [
     {
       name: "sespima-api",
@@ -9,17 +9,20 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3000,
       },
-      error_file: "./logs/err.log",
+      error_file: "./logs/error.log",
       out_file: "./logs/out.log",
-      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+      log_file: "./logs/combined.log",
+      time_format: "YYYY-MM-DD HH:mm:ss Z",
       merge_logs: true,
       autorestart: true,
-      watch: false,
       max_memory_restart: "500M",
-      ignore_watch: ["node_modules", "logs", ".git"],
+      max_restarts: 10,
+      min_uptime: "10s",
+      listen_timeout: 5000,
       kill_timeout: 5000,
+      // Graceful shutdown
       wait_ready: true,
-      listen_timeout: 3000,
+      shutdown_delay: 5000,
     },
   ],
 };
