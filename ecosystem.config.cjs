@@ -1,4 +1,4 @@
-export default {
+module.exports = { // Change 'export default' to 'module.exports'
   apps: [
     {
       name: "sespima-api",
@@ -20,7 +20,6 @@ export default {
       min_uptime: "10s",
       listen_timeout: 5000,
       kill_timeout: 5000,
-      // Graceful shutdown
       wait_ready: true,
       shutdown_delay: 5000,
     },
