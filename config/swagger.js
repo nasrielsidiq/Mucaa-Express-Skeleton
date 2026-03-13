@@ -22,6 +22,10 @@ const options = {
         url: 'https://api.sespima.com',
         description: 'Production Server',
       },
+      {
+        url: 'http://103.172.205.183',
+        description: 'Production Server IP',
+      }
     ],
     components: {
       securitySchemes: {

@@ -28,7 +28,19 @@ dotenv.config();
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(helmet());
+// app.use(helmet());
+// Replace app.use(helmet()); with this:
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "upgrade-insecure-requests": null, // This stops the HTTPS force
+      },
+    },
+  })
+);
+
+
 app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json({ limit: "10kb" }));
@@ -71,6 +83,9 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Also add this to help Express handle the Nginx headers correctly
+app.set('trust proxy', 1);
+
 // Connect DB → init tables → start server
 let server;
 const start = async () => {
@@ -79,6 +94,7 @@ const start = async () => {
     // await initDB(); --- IGNORE ---
     server = app.listen(PORT, () => {
       console.log(`🖥️ Server running on port ${PORT} (NODE_ENV: ${process.env.NODE_ENV || "development"})`);
+      
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);
