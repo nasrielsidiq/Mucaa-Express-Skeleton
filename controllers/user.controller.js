@@ -14,6 +14,21 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
+export const getUsersByRole = async (req, res, next) => {
+  try {
+    const { role } = req.params;
+    const users = await User.findByRole(role);
+
+    res.status(200).json({
+      status: "success",
+      results: users.length,
+      data: users,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET user by ID
 export const getUserById = async (req, res, next) => {
   try {

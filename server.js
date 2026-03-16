@@ -3,10 +3,15 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Production validation & rate limiting
 import "./config/env.validation.js";
 import { globalLimiter, authLimiter } from "./middleware/rate-limit.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { ConnectDB } from "./config/db.js";
 import { initDB }    from "./config/db.init.js";
@@ -22,6 +27,8 @@ import givedTaskRoutes from "./routes/gived_task.routes.js";
 import gradeCategoryRoutes from "./routes/grade_category.routes.js";
 import gradeRoutes from "./routes/grade.routes.js";
 import logActivityRoutes from "./routes/log_activity.routes.js";
+import performanceRoutes from "./routes/performance.routes.js";
+import fileRoutes from "./routes/file.routes.js";
 
 dotenv.config();
 
@@ -43,8 +50,12 @@ app.use(
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Static file serving for uploads - use absolute path
+const uploadsPath = path.join(__dirname, "uploads");
+app.use("/uploads", express.static(uploadsPath));
 
 // Apply rate limiting
 app.use(globalLimiter);
@@ -62,8 +73,10 @@ app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/gived-tasks", givedTaskRoutes);
 app.use("/api/v1/grade-categories", gradeCategoryRoutes);
+app.use("/api/v1/files", fileRoutes);
 app.use("/api/v1/grades", gradeRoutes);
 app.use("/api/v1/activities", logActivityRoutes);
+app.use("/api/v1/performances", performanceRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", uptime: process.uptime() });

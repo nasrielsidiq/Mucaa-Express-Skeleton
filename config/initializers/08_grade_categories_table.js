@@ -5,6 +5,7 @@ export const initGradeCategoriesTable = async () => {
     CREATE TABLE IF NOT EXISTS grade_categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(255) NOT NULL UNIQUE,
+      value FLOAT DEFAULT 1,
       description TEXT,
       category_id INT NULL,
       FOREIGN KEY (category_id) REFERENCES grade_categories(id) ON DELETE SET NULL,

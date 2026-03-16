@@ -194,7 +194,11 @@ const swaggerSpec = swaggerJsdoc(options);
 
 export const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve);
-  app.get('/api-docs', swaggerUi.setup(swaggerSpec, { explorer: true }));
+  app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+    explorer: true, swaggerOptions: {
+      persistAuthorization: true,
+    }
+  }));
 };
 
 export default swaggerSpec;

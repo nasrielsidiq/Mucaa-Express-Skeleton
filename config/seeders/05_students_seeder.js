@@ -28,7 +28,7 @@ export const seedStudents = async () => {
         password: hashedPassword,
         role: "students",
         phone_number: "081234567896",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 129, Jakarta",
         birth_date: "2005-02-20",
         nip: "0001/X-IPA-1/2024",
@@ -42,7 +42,7 @@ export const seedStudents = async () => {
         password: hashedPassword,
         role: "students",
         phone_number: "081234567897",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 130, Jakarta",
         birth_date: "2005-05-10",
         nip: "0002/X-IPA-1/2024",
@@ -56,7 +56,7 @@ export const seedStudents = async () => {
         password: hashedPassword,
         role: "students",
         phone_number: "081234567898",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 131, Jakarta",
         birth_date: "2005-09-15",
         nip: "0003/X-IPA-2/2024",
@@ -70,7 +70,7 @@ export const seedStudents = async () => {
         password: hashedPassword,
         role: "students",
         phone_number: "081234567899",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 132, Jakarta",
         birth_date: "2005-12-05",
         nip: "0004/X-IPS-1/2024",
@@ -84,7 +84,7 @@ export const seedStudents = async () => {
         password: hashedPassword,
         role: "students",
         phone_number: "081234567900",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 133, Jakarta",
         birth_date: "2005-11-25",
         nip: "0005/X-IPA-1/2024",
@@ -97,8 +97,8 @@ export const seedStudents = async () => {
     for (const student of students) {
       // Insert user
       const [userResult] = await pool.query(
-        "INSERT INTO users (name, email, password, role, is_active, phone_number, image, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [student.name, student.email, student.password, student.role, 1, student.phone_number, student.image, student.address, student.birth_date]
+        "INSERT INTO users (name, email, password, role, is_active, phone_number, file_id, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [student.name, student.email, student.password, student.role, 1, student.phone_number, student.file_id, student.address, student.birth_date]
       );
 
       // Insert student record

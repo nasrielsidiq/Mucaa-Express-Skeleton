@@ -19,7 +19,7 @@ export const seedAdmins = async () => {
         email: "admin@sespima.com",
         password: hashedPassword,
         phone_number: "081234567890",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 123, Jakarta",
         birth_date: "1990-01-01",
         role: "admin",
@@ -29,7 +29,7 @@ export const seedAdmins = async () => {
         email: "superadmin@sespima.com",
         password: hashedPassword,
         phone_number: "081234567891",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 124, Jakarta",
         birth_date: "1985-05-15",
         role: "admin",
@@ -38,8 +38,8 @@ export const seedAdmins = async () => {
 
     for (const admin of admins) {
       await pool.query(
-        "INSERT INTO users (name, email, password, role, is_active, phone_number, image, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [admin.name, admin.email, admin.password, admin.role, 1, admin.phone_number, admin.image, admin.address, admin.birth_date]
+        "INSERT INTO users (name, email, password, role, is_active, phone_number, file_id, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [admin.name, admin.email, admin.password, admin.role, 1, admin.phone_number, admin.file_id, admin.address, admin.birth_date]
       );
     }
 

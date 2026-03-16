@@ -65,7 +65,7 @@ export const getTasksByStatus = async (req, res, next) => {
 // CREATE task
 export const createTask = async (req, res, next) => {
   try {
-    const { teacher_id, title, description, start_date, due_date, start_time, due_time, status } = req.body;
+    const { teacher_id, title, description, type, start_date, due_date, start_time, due_time, status } = req.body;
 
     if (!teacher_id || !title) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -75,6 +75,7 @@ export const createTask = async (req, res, next) => {
       teacher_id,
       title,
       description,
+      type,
       start_date,
       due_date,
       start_time,
@@ -95,11 +96,12 @@ export const createTask = async (req, res, next) => {
 export const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, start_date, due_date, start_time, due_time, status } = req.body;
+    const { title, description, type, start_date, due_date, start_time, due_time, status } = req.body;
 
     const task = await Task.update(id, {
       title,
       description,
+      type,
       start_date,
       due_date,
       start_time,

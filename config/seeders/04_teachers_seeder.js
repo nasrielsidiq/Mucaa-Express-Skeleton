@@ -38,7 +38,7 @@ export const seedTeachers = async () => {
         password: hashedPassword,
         role: "teacher",
         phone_number: "081234567894",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 127, Jakarta",
         birth_date: "1990-08-15",
         nrp: "19900815",
@@ -51,7 +51,7 @@ export const seedTeachers = async () => {
         password: hashedPassword,
         role: "teacher",
         phone_number: "081234567895",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 128, Jakarta",
         birth_date: "1987-04-27",
         nrp: "19870427",
@@ -63,8 +63,8 @@ export const seedTeachers = async () => {
     for (const teacher of teachers) {
       // Insert user
       const [userResult] = await pool.query(
-        "INSERT INTO users (name, email, password, role, is_active, phone_number, image, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [teacher.name, teacher.email, teacher.password, teacher.role, 1, teacher.phone_number, teacher.image, teacher.address, teacher.birth_date]
+        "INSERT INTO users (name, email, password, role, is_active, phone_number, file_id, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [teacher.name, teacher.email, teacher.password, teacher.role, 1, teacher.phone_number, teacher.file_id, teacher.address, teacher.birth_date]
       );
 
       // Insert teacher record

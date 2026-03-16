@@ -20,7 +20,7 @@ export const seedDirectors = async () => {
         password: hashedPassword,
         role: "director",
         phone_number: "081234567892",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 125, Jakarta",
         birth_date: "1975-03-10",
         nrp: "19800101",
@@ -33,7 +33,7 @@ export const seedDirectors = async () => {
         password: hashedPassword,
         role: "director",
         phone_number: "081234567893",
-        image: null,
+        file_id: null,
         address: "Jl. Merdeka No. 126, Jakarta",
         birth_date: "1978-07-20",
         nrp: "19850215",
@@ -45,8 +45,8 @@ export const seedDirectors = async () => {
     for (const director of directors) {
       // Insert user
       const [userResult] = await pool.query(
-        "INSERT INTO users (name, email, password, role, is_active, phone_number, image, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [director.name, director.email, director.password, director.role, 1, director.phone_number, director.image, director.address, director.birth_date]
+        "INSERT INTO users (name, email, password, role, is_active, phone_number, file_id, address, birth_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [director.name, director.email, director.password, director.role, 1, director.phone_number, director.file_id, director.address, director.birth_date]
       );
 
       // Insert director record

@@ -4,7 +4,7 @@ const Task = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT t.id, t.teacher_id, t.title, t.description, 
+      SELECT t.id, t.teacher_id, t.title, t.description, t.type,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -18,7 +18,7 @@ const Task = {
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT t.id, t.teacher_id, t.title, t.description, 
+      SELECT t.id, t.teacher_id, t.title, t.description, t.type,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -32,7 +32,7 @@ const Task = {
 
   async findByTeacherId(teacherId) {
     const [rows] = await pool.query(`
-      SELECT t.id, t.teacher_id, t.title, t.description, 
+      SELECT t.id, t.teacher_id, t.title, t.description, t.type,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -47,7 +47,7 @@ const Task = {
 
   async findByStatus(status) {
     const [rows] = await pool.query(`
-      SELECT t.id, t.teacher_id, t.title, t.description, 
+      SELECT t.id, t.teacher_id, t.title, t.description, t.type,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -61,17 +61,17 @@ const Task = {
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ teacher_id, title, description, start_date, due_date, start_time, due_time, status = 'pending' }) {
+  async create({ teacher_id, title, description, type = 'sprint', start_date, due_date, start_time, due_time, status = 'pending' }) {
     const [result] = await pool.query(
-      "INSERT INTO tasks (teacher_id, title, description, start_date, due_date, start_time, due_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [teacher_id, title, description, start_date, due_date, start_time, due_time, status]
+      "INSERT INTO tasks (teacher_id, title, description, type, start_date, due_date, start_time, due_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [teacher_id, title, description, type, start_date, due_date, start_time, due_time, status]
     );
     return this.findById(result.insertId);
   },
 
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
-    const allowed = ["title", "description", "start_date", "due_date", "start_time", "due_time", "status"];
+    const allowed = ["title", "description", "type", "start_date", "due_date", "start_time", "due_time", "status"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);

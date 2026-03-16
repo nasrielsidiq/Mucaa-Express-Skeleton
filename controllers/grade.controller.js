@@ -62,35 +62,19 @@ export const getGradesByTeacherId = async (req, res, next) => {
   }
 };
 
-// GET grades by task ID
-export const getGradesByTaskId = async (req, res, next) => {
-  try {
-    const { taskId } = req.params;
-    const grades = await Grade.findByTaskId(taskId);
-
-    res.status(200).json({
-      status: "success",
-      data: grades,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
 // CREATE grade
 export const createGrade = async (req, res, next) => {
   try {
-    const { student_id, teacher_id, grade_category_id, task_id, grade } = req.body;
+    const { student_id, teacher_id, grade_category_id, grade } = req.body;
 
-    if (!student_id || !teacher_id || !task_id || !grade) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!student_id || !teacher_id || !grade) {
+      return res.status(400).json({ error: "Missing required fields: student_id, teacher_id, grade" });
     }
 
     const newGrade = await Grade.create({
       student_id,
       teacher_id,
       grade_category_id,
-      task_id,
       grade,
     });
 

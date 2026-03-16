@@ -4,7 +4,7 @@ const GradeCategory = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT id, name, description, category_id, created_at, updated_at
+      SELECT id, name, value, description, category_id, created_at, updated_at
       FROM grade_categories
       ORDER BY name ASC
     `);
@@ -13,7 +13,7 @@ const GradeCategory = {
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT id, name, description, category_id, created_at, updated_at
+      SELECT id, name, value, description, category_id, created_at, updated_at
       FROM grade_categories
       WHERE id = ?
     `, [id]);
@@ -22,7 +22,7 @@ const GradeCategory = {
 
   async findByName(name) {
     const [rows] = await pool.query(`
-      SELECT id, name, description, category_id, created_at, updated_at
+      SELECT id, name, value, description, category_id, created_at, updated_at
       FROM grade_categories
       WHERE name = ?
     `, [name]);
@@ -31,7 +31,7 @@ const GradeCategory = {
 
   async findParents() {
     const [rows] = await pool.query(`
-      SELECT id, name, description, category_id, created_at, updated_at
+      SELECT id, name, value, description, category_id, created_at, updated_at
       FROM grade_categories
       WHERE category_id IS NULL
       ORDER BY name ASC
@@ -41,7 +41,7 @@ const GradeCategory = {
 
   async findChildren(categoryId) {
     const [rows] = await pool.query(`
-      SELECT id, name, description, category_id, created_at, updated_at
+      SELECT id, name, value, description, category_id, created_at, updated_at
       FROM grade_categories
       WHERE category_id = ?
       ORDER BY name ASC
@@ -50,17 +50,17 @@ const GradeCategory = {
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ name, description = null, category_id = null }) {
+  async create({ name, value = 1, description = null, category_id = null }) {
     const [result] = await pool.query(
-      "INSERT INTO grade_categories (name, description, category_id) VALUES (?, ?, ?)",
-      [name, description, category_id]
+      "INSERT INTO grade_categories (name, value, description, category_id) VALUES (?, ?, ?, ?)",
+      [name, value, description, category_id]
     );
     return this.findById(result.insertId);
   },
 
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
-    const allowed = ["name", "description", "category_id"];
+    const allowed = ["name", "value", "description", "category_id"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);

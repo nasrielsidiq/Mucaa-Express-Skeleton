@@ -6,6 +6,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  getUsersByRole
 } from "../controllers/user.controller.js";
 import { protect, restrictTo } from "../middleware/auth.middleware.js";
 
@@ -47,6 +48,63 @@ router.get("/", restrictTo("admin"), getAllUsers);
 
 /**
  * @swagger
+ * /api/v1/users/role/{role}:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Users
+ *     summary: Get users by role
+ *     parameters:
+ *       - in: path
+ *         name: role
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 results:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ */
+router.get("/role/:role", getUsersByRole);
+
+/**
+ * @swagger
+ * /api/v1/users/email/{email}:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Users
+ *     summary: Get user by email
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User retrieved successfully
+ *       404:
+ *         description: User not found
+ */
+router.get("/email/:email", getUserByEmail);
+
+/**
+ * @swagger
  * /api/v1/users/{id}:
  *   get:
  *     security:
@@ -76,29 +134,6 @@ router.get("/", restrictTo("admin"), getAllUsers);
  *         description: User not found
  */
 router.get("/:id", getUserById);
-
-/**
- * @swagger
- * /api/v1/users/email/{email}:
- *   get:
- *     security:
- *       - bearerAuth: []
- *     tags:
- *       - Users
- *     summary: Get user by email
- *     parameters:
- *       - in: path
- *         name: email
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: User retrieved successfully
- *       404:
- *         description: User not found
- */
-router.get("/email/:email", getUserByEmail);
 
 /**
  * @swagger
