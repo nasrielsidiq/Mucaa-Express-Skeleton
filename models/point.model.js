@@ -1,63 +1,44 @@
 import pool from "../config/db.js";
 
-const Teacher = {
+const Point = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT t.id, t.user_id, t.nrp, t.rank, t.position, 
-             u.name, u.is_active, u.email, u.role, t.created_at, t.updated_at
-      FROM teachers t
-      JOIN users u ON t.user_id = u.id
-      ORDER BY t.created_at DESC
+      SELECT * FROM points
+      ORDER BY created_at DESC
     `);
     return rows;
   },
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT t.id, t.user_id, t.nrp, t.rank, t.position, 
-             u.name, u.is_active, u.email, u.role, t.created_at, t.updated_at
-      FROM teachers t
-      JOIN users u ON t.user_id = u.id
-      WHERE t.id = ?
+      SELECT * FROM points
+      WHERE id = ?
     `, [id]);
     return rows[0] || null;
   },
 
-  async findByUserId(userId) {
+  async findByCategory(category) {
     const [rows] = await pool.query(`
-      SELECT t.id, t.user_id, t.nrp, t.rank, t.position, 
-             u.name, u.is_active, u.email, u.role, t.created_at, t.updated_at
-      FROM teachers t
-      JOIN users u ON t.user_id = u.id
-      WHERE t.user_id = ?
-    `, [userId]);
-    return rows[0] || null;
-  },
-
-  async findByNrp(nrp) {
-    const [rows] = await pool.query(`
-      SELECT t.id, t.user_id, t.nrp, t.rank, t.position, 
-             u.name, u.is_active, u.email, u.role, t.created_at, t.updated_at
-      FROM teachers t
-      JOIN users u ON t.user_id = u.id
-      WHERE t.nrp = ?
-    `, [nrp]);
-    return rows[0] || null;
+      SELECT * FROM points
+      WHERE category = ?
+      ORDER BY created_at DESC
+    `, [category]);
+    return rows;
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ user_id, nrp, rank, position }) {
+  async create({ name, category, points, description }) {
     const [result] = await pool.query(
-      "INSERT INTO teachers (user_id, nrp, rank, position) VALUES (?, ?, ?, ?)",
-      [user_id, nrp, rank, position]
+      "INSERT INTO points (name, category, points, description) VALUES (?, ?, ?, ?)",
+      [name, category, points, description]
     );
     return this.findById(result.insertId);
   },
 
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
-    const allowed = ["rank", "position"];
+    const allowed = ["name", "category", "points", "description"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);
@@ -69,7 +50,7 @@ const Teacher = {
       .map((k) => fields[k]);
 
     await pool.query(
-      `UPDATE teachers SET ${updates.join(", ")} WHERE id = ?`,
+      `UPDATE points SET ${updates.join(", ")} WHERE id = ?`,
       [...values, id]
     );
 
@@ -79,11 +60,11 @@ const Teacher = {
   // ─── Delete ─────────────────────────────────────────────
   async delete(id) {
     const [result] = await pool.query(
-      "DELETE FROM teachers WHERE id = ?",
+      "DELETE FROM points WHERE id = ?",
       [id]
     );
     return result.affectedRows > 0;
   },
 };
 
-export default Teacher;
+export default Point;

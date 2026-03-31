@@ -62,6 +62,21 @@ export const getTasksByStatus = async (req, res, next) => {
   }
 };
 
+// GET tasks by type
+export const getTasksByType = async (req, res, next) => {
+  try {
+    const { type } = req.params;
+    const tasks = await Task.findByType(type);
+
+    res.status(200).json({
+      status: "success",
+      data: tasks,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // CREATE task
 export const createTask = async (req, res, next) => {
   try {

@@ -5,6 +5,7 @@ const Task = {
   async findAll() {
     const [rows] = await pool.query(`
       SELECT t.id, t.teacher_id, t.title, t.description, t.type,
+             t.is_by_location, t.location_id,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -19,6 +20,7 @@ const Task = {
   async findById(id) {
     const [rows] = await pool.query(`
       SELECT t.id, t.teacher_id, t.title, t.description, t.type,
+             t.is_by_location, t.location_id,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -33,6 +35,7 @@ const Task = {
   async findByTeacherId(teacherId) {
     const [rows] = await pool.query(`
       SELECT t.id, t.teacher_id, t.title, t.description, t.type,
+             t.is_by_location, t.location_id,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -48,6 +51,7 @@ const Task = {
   async findByStatus(status) {
     const [rows] = await pool.query(`
       SELECT t.id, t.teacher_id, t.title, t.description, t.type,
+             t.is_by_location, t.location_id,
              t.start_date, t.due_date, t.start_time, t.due_time, 
              t.status, t.created_at, t.updated_at,
              te.nrp as teacher_nrp, u.name as teacher_name
@@ -60,18 +64,34 @@ const Task = {
     return rows;
   },
 
+  async findByType(type) {
+    const [rows] = await pool.query(`
+      SELECT t.id, t.teacher_id, t.title, t.description, t.type,
+             t.is_by_location, t.location_id,
+             t.start_date, t.due_date, t.start_time, t.due_time, 
+             t.status, t.created_at, t.updated_at,
+             te.nrp as teacher_nrp, u.name as teacher_name
+      FROM tasks t
+      JOIN teachers te ON t.teacher_id = te.id
+      JOIN users u ON te.user_id = u.id
+      WHERE t.type = ?
+      ORDER BY t.due_date ASC
+    `, [type]);
+    return rows;
+  },
+
   // ─── Create ─────────────────────────────────────────────
-  async create({ teacher_id, title, description, type = 'sprint', start_date, due_date, start_time, due_time, status = 'pending' }) {
+  async create({ teacher_id, title, description, type = 'sprint', is_by_location = false, location_id = null, start_date, due_date, start_time, due_time, status = 'active' }) {
     const [result] = await pool.query(
-      "INSERT INTO tasks (teacher_id, title, description, type, start_date, due_date, start_time, due_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [teacher_id, title, description, type, start_date, due_date, start_time, due_time, status]
+      "INSERT INTO tasks (teacher_id, title, description, type, is_by_location, location_id, start_date, due_date, start_time, due_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [teacher_id, title, description, type, is_by_location, location_id, start_date, due_date, start_time, due_time, status]
     );
     return this.findById(result.insertId);
   },
 
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
-    const allowed = ["title", "description", "type", "start_date", "due_date", "start_time", "due_time", "status"];
+    const allowed = ["title", "description", "type", "is_by_location", "location_id", "start_date", "due_date", "start_time", "due_time", "status"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);

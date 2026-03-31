@@ -4,7 +4,7 @@ const Student = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT s.id, s.nip, s.user_id, s.group_id, s.grade, s.religion,
+      SELECT s.id, s.nip, s.user_id, s.group_id, s.grade, s.religion, u.is_active,
              u.name, u.email, u.role, 
              g.name as group_name, g.grade as group_grade,
              s.created_at, s.updated_at
@@ -18,7 +18,7 @@ const Student = {
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT s.id, s.nip, s.user_id, s.group_id, s.grade, s.religion,
+      SELECT s.id, s.nip, s.user_id, s.group_id, s.grade, s.religion, u.is_active,
              u.name, u.email, u.role, 
              g.name as group_name, g.grade as group_grade,
              s.created_at, s.updated_at

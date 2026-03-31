@@ -1,10 +1,28 @@
 import { seedAdmins } from "./01_admin_seeder.js";
-import { seedGroups } from "./02_groups_seeder.js";
-import { seedDirectors } from "./03_directors_seeder.js";
-import { seedTeachers } from "./04_teachers_seeder.js";
+import { seedDirectors } from "./02_directors_seeder.js";
+import { seedTeachers } from "./03_teachers_seeder.js";
+import { seedGroups } from "./04_groups_seeder.js";
 import { seedStudents } from "./05_students_seeder.js";
+import { seedGradeCategories } from "./06_grade_categories_seeder.js";
+import { seedGrades } from "./07_grades_seeder.js";
+import { seedTasks } from "./08_tasks_seeder.js";
+import { seedLocations } from "./10_locations_seeder.js";
+import { seedPoints } from "./09_points_seeder.js";
+import { seedPerformances } from "./11_performances_seeder.js";
 
-const seeders = [seedAdmins, seedGroups, seedDirectors, seedTeachers, seedStudents];
+const seeders = [
+  seedAdmins,
+  seedDirectors,
+  seedTeachers,
+  seedGroups,
+  seedStudents,
+  seedGradeCategories,
+  seedGrades,
+  seedLocations,
+  seedTasks,
+  seedPoints,
+  seedPerformances
+];
 
 export const runSeeders = async () => {
   console.log("🌱 Starting database seeding...");

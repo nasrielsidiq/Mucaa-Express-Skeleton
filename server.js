@@ -10,14 +10,16 @@ import { fileURLToPath } from "url";
 import "./config/env.validation.js";
 import { globalLimiter, authLimiter } from "./middleware/rate-limit.js";
 
+import { autoLogActivity } from "./middleware/auto_logger.middleware.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import { ConnectDB } from "./config/db.js";
-import { initDB }    from "./config/db.init.js";
+import { initDB } from "./config/db.init.js";
 import { setupSwagger } from "./config/swagger.js";
-import userRoutes    from "./routes/user.routes.js";
-import authRoutes    from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import directorRoutes from "./routes/director.routes.js";
 import teacherRoutes from "./routes/teacher.routes.js";
 import groupRoutes from "./routes/group.routes.js";
@@ -29,10 +31,13 @@ import gradeRoutes from "./routes/grade.routes.js";
 import logActivityRoutes from "./routes/log_activity.routes.js";
 import performanceRoutes from "./routes/performance.routes.js";
 import fileRoutes from "./routes/file.routes.js";
+import pointRoutes from "./routes/point.routes.js";
+import locationRoutes from "./routes/location.routes.js";
+import webSpecificRoutes from "./routes/web_specific.routes.js";
 
 dotenv.config();
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // app.use(helmet());
@@ -63,6 +68,9 @@ app.use(globalLimiter);
 // Swagger Documentation
 setupSwagger(app);
 
+// Auto Activity Logger Hook
+app.use(autoLogActivity);
+
 // Auth routes with stricter rate limiting
 app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/users", userRoutes);
@@ -75,8 +83,11 @@ app.use("/api/v1/gived-tasks", givedTaskRoutes);
 app.use("/api/v1/grade-categories", gradeCategoryRoutes);
 app.use("/api/v1/files", fileRoutes);
 app.use("/api/v1/grades", gradeRoutes);
-app.use("/api/v1/activities", logActivityRoutes);
+app.use("/api/v1/log-activities", logActivityRoutes);
 app.use("/api/v1/performances", performanceRoutes);
+app.use("/api/v1/points", pointRoutes);
+app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/web-specific", webSpecificRoutes);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", uptime: process.uptime() });
@@ -86,9 +97,9 @@ app.use((req, res) => res.status(404).json({ error: "Route not found" }));
 
 app.use((err, req, res, next) => {
   const isProd = process.env.NODE_ENV === "production";
-  
+
   console.error(err.stack);
-  
+
   // Don't expose error details in production
   res.status(err.status || 500).json({
     error: isProd ? "Internal Server Error" : err.message,
@@ -107,7 +118,7 @@ const start = async () => {
     // await initDB(); --- IGNORE ---
     server = app.listen(PORT, () => {
       console.log(`🖥️ Server running on port ${PORT} (NODE_ENV: ${process.env.NODE_ENV || "development"})`);
-      
+
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);

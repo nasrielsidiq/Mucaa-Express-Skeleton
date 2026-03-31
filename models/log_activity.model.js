@@ -4,7 +4,7 @@ const LogActivity = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT la.id, la.user_id, la.activity, la.created_at,
+      SELECT la.id, la.user_id, la.action_label, la.activity, la.modul, la.ip_address, la.created_at,
              u.name, u.email, u.role
       FROM log_activity la
       JOIN users u ON la.user_id = u.id
@@ -15,7 +15,7 @@ const LogActivity = {
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT la.id, la.user_id, la.activity, la.created_at,
+      SELECT la.id, la.user_id, la.action_label, la.activity, la.modul, la.ip_address, la.created_at,
              u.name, u.email, u.role
       FROM log_activity la
       JOIN users u ON la.user_id = u.id
@@ -26,7 +26,7 @@ const LogActivity = {
 
   async findByUserId(userId) {
     const [rows] = await pool.query(`
-      SELECT la.id, la.user_id, la.activity, la.created_at,
+      SELECT la.id, la.user_id, la.action_label, la.activity, la.modul, la.ip_address, la.created_at,
              u.name, u.email, u.role
       FROM log_activity la
       JOIN users u ON la.user_id = u.id
@@ -38,7 +38,7 @@ const LogActivity = {
 
   async findRecent(limit = 50) {
     const [rows] = await pool.query(`
-      SELECT la.id, la.user_id, la.activity, la.created_at,
+      SELECT la.id, la.user_id, la.action_label, la.activity, la.modul, la.ip_address, la.created_at,
              u.name, u.email, u.role
       FROM log_activity la
       JOIN users u ON la.user_id = u.id
@@ -50,7 +50,7 @@ const LogActivity = {
 
   async findByDateRange(startDate, endDate) {
     const [rows] = await pool.query(`
-      SELECT la.id, la.user_id, la.activity, la.created_at,
+      SELECT la.id, la.user_id, la.action_label, la.activity, la.modul, la.ip_address, la.created_at,
              u.name, u.email, u.role
       FROM log_activity la
       JOIN users u ON la.user_id = u.id
@@ -61,15 +61,15 @@ const LogActivity = {
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ user_id, activity }) {
+  async create({ user_id, action_label, activity, modul, ip_address }) {
     const [result] = await pool.query(
-      "INSERT INTO log_activity (user_id, activity) VALUES (?, ?)",
-      [user_id, activity]
+      "INSERT INTO log_activity (user_id, action_label, activity, modul, ip_address) VALUES (?, ?, ?, ?, ?)",
+      [user_id, action_label || 'Aktivitas Sistem', activity, modul || 'Lainnya', ip_address || null]
     );
     return this.findById(result.insertId);
   },
 
-  // ─── Delete (old logs) ───────────────────────────────────
+  // ─── Delete ─────────────────────────────────────────────
   async deleteOlderThan(days = 90) {
     const [result] = await pool.query(
       "DELETE FROM log_activity WHERE created_at < DATE_SUB(NOW(), INTERVAL ? DAY)",
@@ -85,6 +85,12 @@ const LogActivity = {
     );
     return result.affectedRows > 0;
   },
+  
+  // ─── Clear All ──────────────────────────────────────────
+  async clearAll() {
+    const [result] = await pool.query("TRUNCATE TABLE log_activity");
+    return result;
+  }
 };
 
 export default LogActivity;

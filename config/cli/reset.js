@@ -10,7 +10,10 @@ const tablesToDrop = [
   'tasks',
   'gived_tasks',
   'grade_categories',
-  'grades' 
+  'grades',
+  'performances',
+  'locations',
+  'points'
 ];
 
 const escapedTables = tablesToDrop.map(table => `\`${table}\``).join(', ');

@@ -35,6 +35,7 @@ export const register = async (req, res, next) => {
     });
     const token = signToken(user.id);
 
+    res.locals.loggedUserId = user.id; // for auto_logger middleware
     res.status(201).json({
       status: "success",
       token,
@@ -67,6 +68,7 @@ export const login = async (req, res, next) => {
 
     const token = signToken(user.id);
 
+    res.locals.loggedUserId = user.id; // for auto_logger middleware
     res.status(200).json({
       status: "success",
       token,

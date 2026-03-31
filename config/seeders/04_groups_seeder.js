@@ -10,6 +10,9 @@ export const seedGroups = async () => {
       return;
     }
 
+    // Fetch teachers to assign as mentors
+    const [teachers] = await pool.query("SELECT id FROM teachers");
+
     const groups = [
       { name: "X IPA 1", grade: "10" },
       { name: "X IPA 2", grade: "10" },
@@ -22,10 +25,13 @@ export const seedGroups = async () => {
       { name: "XII IPS 1", grade: "12" },
     ];
 
-    for (const group of groups) {
+    for (let i = 0; i < groups.length; i++) {
+      const group = groups[i];
+      const mentor_id = teachers.length > 0 ? teachers[i % teachers.length].id : null;
+      
       await pool.query(
-        "INSERT INTO `groups` (name, grade) VALUES (?, ?)",
-        [group.name, group.grade]
+        "INSERT INTO `groups` (name, grade, mentor_id) VALUES (?, ?, ?)",
+        [group.name, group.grade, mentor_id]
       );
     }
 

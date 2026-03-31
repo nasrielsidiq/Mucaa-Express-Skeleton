@@ -6,8 +6,10 @@ export const initGroupsTable = async () => {
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(255) NOT NULL UNIQUE,
       grade VARCHAR(50) NOT NULL,
+      mentor_id INT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (mentor_id) REFERENCES teachers(id) ON DELETE SET NULL
     ) ENGINE=InnoDB;
   `;
 

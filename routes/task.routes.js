@@ -4,6 +4,7 @@ import {
   getTaskById,
   getTasksByTeacherId,
   getTasksByStatus,
+  getTasksByType,
   createTask,
   updateTask,
   deleteTask,
@@ -79,6 +80,30 @@ router.get("/teacher/:teacherId", protect, getTasksByTeacherId);
  *         description: No tasks found with this status
  */
 router.get("/status/:status", protect, getTasksByStatus);
+
+/**
+ * @swagger
+ * /api/v1/tasks/type/{type}:
+ *   get:
+ *     tags:
+ *       - Tasks
+ *     summary: Get tasks by type
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [sprint, apel]
+ *     responses:
+ *       200:
+ *         description: Tasks retrieved successfully
+ *       404:
+ *         description: No tasks found with this type
+ */
+router.get("/type/:type", protect, getTasksByType);
 
 /**
  * @swagger

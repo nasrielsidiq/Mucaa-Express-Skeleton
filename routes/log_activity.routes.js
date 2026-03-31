@@ -8,6 +8,9 @@ import {
   createActivity,
   deleteOldActivities,
   deleteActivitiesByUserId,
+  exportCSV,
+  exportTXT,
+  clearActivities,
 } from "../controllers/log_activity.controller.js";
 import { protect, restrictTo } from "../middleware/auth.middleware.js";
 
@@ -206,5 +209,60 @@ router.delete("/old", protect, restrictTo("admin"), deleteOldActivities);
  *         description: Activities deleted successfully
  */
 router.delete("/user/:userId", protect, restrictTo("admin"), deleteActivitiesByUserId);
+
+/**
+ * @swagger
+ * /api/v1/log-activities/export/csv:
+ *   get:
+ *     tags:
+ *       - Activity Logs
+ *     summary: Export all activities as CSV
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: CSV file download
+ *         content:
+ *           text/csv:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.get("/export/csv", protect, restrictTo("admin"), exportCSV);
+
+/**
+ * @swagger
+ * /api/v1/log-activities/export/txt:
+ *   get:
+ *     tags:
+ *       - Activity Logs
+ *     summary: Export all activities as TXT
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: TXT file download
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               format: binary
+ */
+router.get("/export/txt", protect, restrictTo("admin"), exportTXT);
+
+/**
+ * @swagger
+ * /api/v1/log-activities/clear:
+ *   delete:
+ *     tags:
+ *       - Activity Logs
+ *     summary: Clear all activity logs
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: All activity logs cleared
+ */
+router.delete("/clear", protect, restrictTo("admin"), clearActivities);
 
 export default router;

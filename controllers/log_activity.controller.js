@@ -135,3 +135,64 @@ export const deleteActivitiesByUserId = async (req, res, next) => {
     next(err);
   }
 };
+
+// EXPORT activities as CSV
+export const exportCSV = async (req, res, next) => {
+  try {
+    const activities = await LogActivity.findAll();
+    
+    if (activities.length === 0) {
+      return res.status(404).json({ error: "No activities to export" });
+    }
+
+    let csvContent = "ID,User ID,Name,Role,Action Label,Activity,Modul,IP Address,Created At\n";
+    activities.forEach(log => {
+      const escapedActivity = `"${(log.activity || '').replace(/"/g, '""')}"`;
+      csvContent += `${log.id},${log.user_id},"${log.name}","${log.role}","${log.action_label}",${escapedActivity},"${log.modul}","${log.ip_address}","${new Date(log.created_at).toISOString()}"\n`;
+    });
+
+    res.header('Content-Type', 'text/csv');
+    res.attachment('log_activities_backup.csv');
+    return res.send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// EXPORT activities as TXT
+export const exportTXT = async (req, res, next) => {
+  try {
+    const activities = await LogActivity.findAll();
+    
+    if (activities.length === 0) {
+      return res.status(404).json({ error: "No activities to export" });
+    }
+
+    let txtContent = "--- LOG ACTIVITIES BACKUP ---\n\n";
+    activities.forEach(log => {
+      txtContent += `[${new Date(log.created_at).toLocaleString()}] - User: ${log.name} (${log.role})\n`;
+      txtContent += `Module: ${log.modul} | Action: ${log.action_label} | IP: ${log.ip_address || 'N/A'}\n`;
+      txtContent += `Note: ${log.activity}\n`;
+      txtContent += `----------------------------------------\n`;
+    });
+
+    res.header('Content-Type', 'text/plain');
+    res.attachment('log_activities_backup.txt');
+    return res.send(txtContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// CLEAR all activities
+export const clearActivities = async (req, res, next) => {
+  try {
+    await LogActivity.clearAll();
+    res.status(200).json({
+      status: "success",
+      message: "All activity logs have been cleared successfully."
+    });
+  } catch (err) {
+    next(err);
+  }
+};

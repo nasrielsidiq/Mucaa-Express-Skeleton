@@ -4,7 +4,7 @@ const Group = {
   // ─── Find ───────────────────────────────────────────────
   async findAll() {
     const [rows] = await pool.query(`
-      SELECT id, name, grade, created_at, updated_at
+      SELECT id, name, grade, mentor_id, created_at, updated_at
       FROM \`groups\`
       ORDER BY grade ASC, name ASC
     `);
@@ -13,7 +13,7 @@ const Group = {
 
   async findById(id) {
     const [rows] = await pool.query(`
-      SELECT id, name, grade, created_at, updated_at
+      SELECT id, name, grade, mentor_id, created_at, updated_at
       FROM \`groups\`
       WHERE id = ?
     `, [id]);
@@ -22,7 +22,7 @@ const Group = {
 
   async findByName(name) {
     const [rows] = await pool.query(`
-      SELECT id, name, grade, created_at, updated_at
+      SELECT id, name, grade, mentor_id, created_at, updated_at
       FROM \`groups\`
       WHERE name = ?
     `, [name]);
@@ -31,7 +31,7 @@ const Group = {
 
   async findByGrade(grade) {
     const [rows] = await pool.query(`
-      SELECT id, name, grade, created_at, updated_at
+      SELECT id, name, grade, mentor_id, created_at, updated_at
       FROM \`groups\`
       WHERE grade = ?
       ORDER BY name ASC
@@ -40,17 +40,17 @@ const Group = {
   },
 
   // ─── Create ─────────────────────────────────────────────
-  async create({ name, grade }) {
+  async create({ name, grade, mentor_id }) {
     const [result] = await pool.query(
-      "INSERT INTO `groups` (name, grade) VALUES (?, ?)",
-      [name, grade]
+      "INSERT INTO `groups` (name, grade, mentor_id) VALUES (?, ?, ?)",
+      [name, grade, mentor_id]
     );
     return this.findById(result.insertId);
   },
 
   // ─── Update ─────────────────────────────────────────────
   async update(id, fields) {
-    const allowed = ["name", "grade"];
+    const allowed = ["name", "grade", "mentor_id"];
     const updates = Object.keys(fields)
       .filter((k) => allowed.includes(k))
       .map((k) => `${k} = ?`);
